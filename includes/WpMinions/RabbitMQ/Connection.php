@@ -14,7 +14,7 @@ class Connection {
 	public function __construct() {
 		global $rabbitmq_server;
 
-		if ( class_exists( '\PhpAmqpLib\Connection\AMQPStreamConnection' ) ) {
+		if ( class_exists( '\PhpAmqpLib\Connection\AMQPSSLConnection' ) ) {
 			if ( empty( $rabbitmq_server ) ) {
 				$rabbitmq_server = array();
 			}
@@ -27,7 +27,11 @@ class Connection {
 				'vhost'    => '/',
 			) );
 
-			$this->connection = new \PhpAmqpLib\Connection\AMQPStreamConnection( $rabbitmq_server['host'], $rabbitmq_server['port'], $rabbitmq_server['username'], $rabbitmq_server['password'], $rabbitmq_server['vhost'] );
+			$this->connection = new \PhpAmqpLib\Connection\AMQPSSLConnection( $rabbitmq_server['host'], $rabbitmq_server['port'], $rabbitmq_server['username'], $rabbitmq_server['password'], $rabbitmq_server['vhost'], array(
+                          'verify_peer_name' => true,
+                          'verify_peer' => true,
+                          'allow_self_signed' => false
+                        ));
 			$this->channel    = $this->connection->channel();
 
 			$rabbitmq_declare_passive_filter    = apply_filters( 'wp_minion_rabbitmq_declare_passive_filter', false );

@@ -20,6 +20,7 @@ class Connection {
 			}
 
 			$rabbitmq_server = wp_parse_args( $rabbitmq_server, array(
+				'ssl'      => true,
 				'host'     => 'localhost',
 				'port'     => 5672,
 				'username' => 'guest',
@@ -27,11 +28,13 @@ class Connection {
 				'vhost'    => '/',
 			) );
 
-			$this->connection = new \PhpAmqpLib\Connection\AMQPSSLConnection( $rabbitmq_server['host'], $rabbitmq_server['port'], $rabbitmq_server['username'], $rabbitmq_server['password'], $rabbitmq_server['vhost'], array(
-                          'verify_peer_name' => true,
-                          'verify_peer' => true,
-                          'allow_self_signed' => false
-                        ));
+			$class = $rabbitmq_server['ssl'] ? '\PhpAmqpLib\Connection\AMQPSSLConnection' : '\PhpAmqpLib\Connection\AMQPStreamConnection';
+
+			$this->connection = new $class( $rabbitmq_server['host'], $rabbitmq_server['port'], $rabbitmq_server['username'], $rabbitmq_server['password'], $rabbitmq_server['vhost'], array(
+					'verify_peer_name' => true,
+					'verify_peer' => true,
+					'allow_self_signed' => false
+				));
 			$this->channel    = $this->connection->channel();
 
 			$rabbitmq_declare_passive_filter    = apply_filters( 'wp_minion_rabbitmq_declare_passive_filter', false );

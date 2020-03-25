@@ -34,8 +34,9 @@ class Connection {
 			$rabbitmq_declare_durable_filter    = apply_filters( 'wp_minion_rabbitmq_declare_durable_filter', true );
 			$rabbitmq_declare_exclusive_filter  = apply_filters( 'wp_minion_rabbitmq_declare_exclusive_filter', false );
 			$rabbitmq_declare_autodelete_filter = apply_filters( 'wp_minion_rabbitmq_declare_autodelete_filter', false );
+			$queue_name                         = apply_filters( 'wp_minion_rabbitmq_declare_queue_name', 'wordpress' );
 
-			$this->channel->queue_declare( 'wordpress', $rabbitmq_declare_passive_filter, $rabbitmq_declare_durable_filter, $rabbitmq_declare_exclusive_filter, $rabbitmq_declare_autodelete_filter );
+			$this->channel->queue_declare( $queue_name, $rabbitmq_declare_passive_filter, $rabbitmq_declare_durable_filter, $rabbitmq_declare_exclusive_filter, $rabbitmq_declare_autodelete_filter );
 
 			add_action( 'shutdown', array( $this, 'shutdown' ) );
 		} else {

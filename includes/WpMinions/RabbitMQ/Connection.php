@@ -38,7 +38,7 @@ class Connection {
 
 			$this->channel->queue_declare( $queue_name, $rabbitmq_declare_passive_filter, $rabbitmq_declare_durable_filter, $rabbitmq_declare_exclusive_filter, $rabbitmq_declare_autodelete_filter );
 
-			add_action( 'shutdown', array( $this, 'shutdown' ) );
+			add_action( 'shutdown', array( $this, 'shutdown' ), PHP_INT_MAX );
 		} else {
 			throw new \Exception( 'Could not create connection.' );
 		}

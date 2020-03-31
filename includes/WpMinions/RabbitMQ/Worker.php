@@ -43,8 +43,10 @@ class Worker extends BaseWorker {
 		if ( ! $this->connect() ) {
 			return false;
 		}
+		
+		$queue_name = apply_filters( 'wp_minion_rabbitmq_declare_queue_name', 'wordpress' );
 
-		$this->connection->get_channel()->basic_consume( 'wordpress', '', false, true, false, false, function( $message ) {
+		$this->connection->get_channel()->basic_consume( $queue_name, '', false, true, false, false, function( $message ) {
 			try {
 				$job_data = json_decode( $message->body, true );
 				$hook     = $job_data['hook'];

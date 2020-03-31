@@ -64,7 +64,9 @@ class Client extends BaseClient {
 
 		$message = new \PhpAmqpLib\Message\AMQPMessage(
 			json_encode( $job_data ) );
+		
+		$queue_name = apply_filters( 'wp_minion_rabbitmq_declare_queue_name', 'wordpress' );
 
-		$this->connection->get_channel()->basic_publish( $message, '', 'wordpress' );
+		$this->connection->get_channel()->basic_publish( $message, '', $queue_name );
 	}
 }
